@@ -16,7 +16,18 @@ namespace Pathfinding {
 	public class AIDestinationSetter : VersionedMonoBehaviour {
 		/// <summary>The object that the AI should move to</summary>
 		public Transform target;
+		public Transform detectPoint;
+		public LayerMask playerLayer;
+
 		IAstarAI ai;
+		public float detectRange;
+
+		private bool playerDetected = false;
+
+		public bool getDetected()
+		{
+			return playerDetected;
+		}
 
 		void OnEnable () {
 			ai = GetComponent<IAstarAI>();
@@ -33,7 +44,33 @@ namespace Pathfinding {
 
 		/// <summary>Updates the AI's destination every frame</summary>
 		void Update () {
-			if (target != null && ai != null) ai.destination = target.position;
+			if (target != null && ai != null && playerDetected) { ai.isStopped = false; ai.destination = target.position; }
+			else ai.isStopped = true;
+		}
+
+		private void FixedUpdate()
+		{
+			playerDetected = Detect();
+		}
+
+		private bool Detect ()
+		{
+			//detect
+			Collider2D detection = Physics2D.OverlapCircle(detectPoint.position, detectRange, playerLayer);
+
+			if (detection == null) return false;
+			else {
+				Debug.Log("Found " + detection);
+				return true; 
+			}
+		}
+
+		private void OnDrawGizmosSelected()
+		{
+			if (detectPoint == null)
+				return;
+
+			Gizmos.DrawWireSphere(detectPoint.position, detectRange);
 		}
 	}
 }

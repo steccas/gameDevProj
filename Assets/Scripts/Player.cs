@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : Character
 {
-
     public PlayerController controller;
 
     public float runspeed = 40f;
@@ -12,8 +11,7 @@ public class Player : Character
     float horizontalMove = 0f;
     bool jump = false;
 
-    public float attackRate = 2f;
-    float nextAttackTime = 0f;
+    bool isBlocking = false;
 
     // Update is called once per frame
     void Update()
@@ -28,14 +26,26 @@ public class Player : Character
             animator.SetBool("isJumping", true);
         }
 
-        if(Time.time >= nextAttackTime)
+        if (Input.GetButtonDown("Fire1"))
         {
-            if (Input.GetButton("Fire1"))
-            {
-                Attack();
-                nextAttackTime = Time.time + 1f / attackRate;
-                Debug.Log("attacking");
-            }
+            Attack();
+        }
+
+        if (Input.GetButtonDown("Fire2"))
+        {
+            animator.SetTrigger("isBlocking");
+        }
+
+        if (Input.GetButton("Fire2"))
+        {
+            isBlocking = true;
+            //animator.SetTrigger("block");
+            //animator.SetTrigger("isBlocking");
+        }
+        if (Input.GetButtonUp("Fire2"))
+        {
+            isBlocking = false;
+            animator.SetTrigger("stopBlocking");
         }
     }
 
@@ -43,7 +53,6 @@ public class Player : Character
     {
         controller.Move(horizontalMove * Time.fixedDeltaTime, false, jump);
         jump = false;
-
     }
 
     public void OnLanding()
@@ -56,6 +65,11 @@ public class Player : Character
         base.Die();
         currentHealth = maxHealth;
         Invoke("Respawn", 0.5f);
+    }
+
+    protected override void TakeDamage(int damage)
+    {
+        if (isBlocking == false) base.TakeDamage(damage);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

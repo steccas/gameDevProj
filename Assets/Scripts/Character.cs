@@ -12,6 +12,9 @@ public class Character : MonoBehaviour
     public int maxHealth = 100;
     public int damage = 20;
 
+    public float attackRate = 2f;
+    float nextAttackTime = 0f;
+
     protected int currentHealth;
 
     protected Vector3 respawnPoint;
@@ -23,36 +26,34 @@ public class Character : MonoBehaviour
         respawnPoint = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     protected void Attack()
     {
-        //anim
-        animator.SetTrigger("isAttacking");
+        float time = Time.time;
+        if (time >= nextAttackTime)
+        {       
+            //anim
+            animator.SetTrigger("isAttacking");
 
-        //detect
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-        
-        //damage
-        foreach(Collider2D enemy in hitEnemies)
-        {
-            Debug.Log("Hit " + enemy.name);
-            enemy.GetComponent<Character>().takeDamage(damage);
-            //Debug.Log(currentHealth);
-        }
+            //detect
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+
+            //damage
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                Debug.Log("Hit " + enemy.name);
+                enemy.GetComponent<Character>().TakeDamage(damage);
+                //Debug.Log(currentHealth);
+            }
+            nextAttackTime = Time.time + 1f / attackRate;
+            Debug.Log("attacking");
+        } else Debug.Log("noAtkTime " + time + " >= " + nextAttackTime);
     }
 
-    protected void takeDamage(int damage)
+    protected virtual void TakeDamage(int damage)
     {
         currentHealth -= damage;
-
         animator.SetTrigger("isHurt");
-
-        if(currentHealth <= 0) { Die(); }
+        if (currentHealth <= 0) { Die(); }
     }
 
     protected virtual void Die()
