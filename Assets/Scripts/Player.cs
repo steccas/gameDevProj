@@ -12,6 +12,7 @@ public class Player : Character
     bool jump = false;
 
     bool isBlocking = false;
+    public HealthBar healthBar;
 
     // Update is called once per frame
     void Update()
@@ -67,9 +68,19 @@ public class Player : Character
         Invoke("Respawn", 0.5f);
     }
 
+    protected override void Respawn()
+    {
+        base.Respawn();
+        healthBar.SetHealth(maxHealth);
+    }
+
     protected override void TakeDamage(int damage)
     {
-        if (isBlocking == false) base.TakeDamage(damage);
+        if (isBlocking == false)
+        {
+            base.TakeDamage(damage);
+            healthBar.SetHealth(currentHealth);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

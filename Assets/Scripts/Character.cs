@@ -62,7 +62,7 @@ public class Character : MonoBehaviour
         Debug.Log("dead");
     }
 
-    protected void Respawn() {
+    protected virtual void Respawn() {
         transform.position = respawnPoint;
     }
 
