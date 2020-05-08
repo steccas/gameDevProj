@@ -62,7 +62,6 @@ public class PlayerController : MonoBehaviour
 				m_Grounded = true;
 				if (!wasGrounded) {
 					OnLandEvent.Invoke();
-					//audioManager.Play("Landing");
 				}
 			}
 		}
@@ -138,6 +137,7 @@ public class PlayerController : MonoBehaviour
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			audioManager.Stop("Landing");
 			audioManager.Play("Jump");
 			//audioManager.Stop("WalkGrass");
 		}

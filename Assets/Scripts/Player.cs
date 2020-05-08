@@ -61,6 +61,7 @@ public class Player : Character
     public void OnLanding()
     {
         animator.SetBool("isJumping", false);
+        audioManager.Play("Landing");
     }
 
     protected override void Die()
