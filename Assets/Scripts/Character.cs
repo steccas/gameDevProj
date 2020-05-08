@@ -19,9 +19,12 @@ public class Character : MonoBehaviour
 
     protected Vector3 respawnPoint;
 
+    protected AudioManager audioManager;
+
     // Start is called before the first frame update
     void Start()
     {
+        audioManager = AudioManager.GetInstance();
         currentHealth = maxHealth;
         respawnPoint = transform.position;
     }
@@ -37,13 +40,21 @@ public class Character : MonoBehaviour
             //detect
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
+            bool hit = false;
+
             //damage
             foreach (Collider2D enemy in hitEnemies)
             {
                 Debug.Log("Hit " + enemy.name);
+                
                 enemy.GetComponent<Character>().TakeDamage(damage);
+                hit = true;
                 //Debug.Log(currentHealth);
             }
+
+            if (hit == false) audioManager.Play("SaberMiss");
+            if (hit == true) audioManager.Play("SaberHit");
+
             nextAttackTime = Time.time + 1f / attackRate;
             Debug.Log("attacking");
         } else Debug.Log("noAtkTime " + time + " >= " + nextAttackTime);
@@ -59,6 +70,7 @@ public class Character : MonoBehaviour
     protected virtual void Die()
     {
         animator.SetTrigger("isDying");
+        audioManager.Play("Hit");
         Debug.Log("dead");
     }
 

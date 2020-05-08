@@ -21,6 +21,9 @@ public class Player : Character
 
         animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
+        //if (Mathf.Abs(horizontalMove) == 0f) audioManager.Play("WalkGrass");
+        //else if (Mathf.Abs(horizontalMove) == 0f) audioManager.Stop("WalkGrass");
+
         if (Input.GetButton("Jump"))
         {
             jump = true;
@@ -35,13 +38,12 @@ public class Player : Character
         if (Input.GetButtonDown("Fire2"))
         {
             animator.SetTrigger("isBlocking");
+            audioManager.Play("SaberRise");
         }
 
         if (Input.GetButton("Fire2"))
         {
             isBlocking = true;
-            //animator.SetTrigger("block");
-            //animator.SetTrigger("isBlocking");
         }
         if (Input.GetButtonUp("Fire2"))
         {
@@ -80,7 +82,9 @@ public class Player : Character
         {
             base.TakeDamage(damage);
             healthBar.SetHealth(currentHealth);
-        }
+            audioManager.Play("Hit");
+        } 
+        if (isBlocking == true) { audioManager.Play("SaberBlk"); }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -5,7 +5,18 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
 
-	public static AudioManager instance { get; private set; }
+	public static AudioManager Instance { get; private set; }
+
+	public static AudioManager GetInstance()
+	{
+		if (Instance == null)
+		{
+			//Instance = gameObject.AddComponent<AudioManager>();
+			//Instance = this;
+			Instance = FindObjectOfType(typeof(AudioManager)) as AudioManager;
+		}
+		return Instance;
+	}
 
 	public AudioMixerGroup mixerGroup;
 
@@ -13,11 +24,10 @@ public class AudioManager : MonoBehaviour
 
 	void Awake()
 	{
-		if (instance == null)
+		if (Instance == null)
 		{
-			instance = this;
+			Instance = this;
 			DontDestroyOnLoad(gameObject);
-			
 		}
 		else
 		{
@@ -36,18 +46,15 @@ public class AudioManager : MonoBehaviour
 
 	private void Start()
 	{
-		//Play("MainTheme");
-		Play("Encounter");
+		Play("MainTheme");
+		//Play("Encounter");
+		//Play("Encounter");
 	}
 
 	public void Play(string audio)
 	{
-		Audio s = Array.Find(audios, item => item.name == audio);
-		if (s == null)
-		{
-			Debug.LogWarning("Audio: " + name + " not found!");
-			return;
-		}
+		Audio s = AudioFind(audio);
+		if (s == null) return;
 
 		float volume = s.volume * (1f + UnityEngine.Random.Range(-s.volumeVariance / 2f, s.volumeVariance / 2f));
 		float pitch = s.pitch * (1f + UnityEngine.Random.Range(-s.pitchVariance / 2f, s.pitchVariance / 2f));
@@ -58,4 +65,22 @@ public class AudioManager : MonoBehaviour
 		s.source.Play();
 	}
 
+	public void Stop(string audio)
+	{
+		Audio s = AudioFind(audio);
+		if (s == null) return;
+
+		s.source.Stop();
+	}
+
+	private Audio AudioFind(string audio)
+	{
+		Audio r = Array.Find(audios, item => item.name == audio);
+		if (r == null)
+		{
+			Debug.LogWarning("Audio: " + name + " not found!");
+			return null;
+		}
+		return r;
+	} 
 }

@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
 	public UnityEvent OnLandEvent;
 
+	protected AudioManager audioManager;
+
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
 
@@ -41,6 +43,8 @@ public class PlayerController : MonoBehaviour
 
 		if (OnCrouchEvent == null)
 			OnCrouchEvent = new BoolEvent();
+
+		audioManager = AudioManager.GetInstance();
 	}
 
 	private void FixedUpdate()
@@ -56,8 +60,10 @@ public class PlayerController : MonoBehaviour
 			if (colliders[i].gameObject != gameObject)
 			{
 				m_Grounded = true;
-				if (!wasGrounded)
+				if (!wasGrounded) {
 					OnLandEvent.Invoke();
+					//audioManager.Play("Landing");
+				}
 			}
 		}
 	}
@@ -132,7 +138,16 @@ public class PlayerController : MonoBehaviour
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			audioManager.Play("Jump");
+			//audioManager.Stop("WalkGrass");
 		}
+
+		if (!m_Grounded) audioManager.Stop("WalkGrass");
+
+		if (move == 0.0f/* && m_Grounded*/) {
+			audioManager.Play("WalkGrass");
+		}
+
 	}
 
 
