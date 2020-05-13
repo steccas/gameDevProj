@@ -14,6 +14,18 @@ public class Player : Character
     bool isBlocking = false;
     public HealthBar healthBar;
 
+    public void AddHealth(int health)
+    {
+        if (currentHealth < maxHealth) currentHealth += health;
+        else if ((currentHealth + health) > maxHealth) currentHealth = maxHealth;
+        SyncHealthBar();
+    }
+
+    public void AddDamage(int dm)
+    {
+        damage += dm;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -82,10 +94,15 @@ public class Player : Character
         if (isBlocking == false)
         {
             base.TakeDamage(damage);
-            healthBar.SetHealth(currentHealth);
+            SyncHealthBar();
             audioManager.Play("Hit");
         } 
         if (isBlocking == true) { audioManager.Play("SaberBlk"); }
+    }
+
+    private void SyncHealthBar()
+    {
+        healthBar.SetHealth(currentHealth);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

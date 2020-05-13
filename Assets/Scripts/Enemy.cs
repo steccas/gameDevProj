@@ -25,14 +25,14 @@ public class Enemy : Character
         if (aiPath.desiredVelocity.x < -0.9f)
         {
             Debug.Log("flip");
-            flip(Mathf.Abs(transform.localScale.x));
+            Flip(Mathf.Abs(transform.localScale.x));
         } else if (aiPath.desiredVelocity.x > 0.9f)
         {
-            flip(-Mathf.Abs(transform.localScale.x));
+            Flip(-Mathf.Abs(transform.localScale.x));
         }
     }
 
-    void flip(float scale)
+    void Flip(float scale)
     {
         transform.localScale = new Vector3(scale, transform.localScale.y, transform.localScale.z);
     }
