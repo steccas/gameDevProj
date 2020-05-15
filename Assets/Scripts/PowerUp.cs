@@ -25,4 +25,9 @@ public class PowerUp : MonoBehaviour
     {
         playerObj = playerC.GetComponent<Player>();
     }
+
+    protected void Destroyer()
+    {
+        Destroy(gameObject);
+    }
 }

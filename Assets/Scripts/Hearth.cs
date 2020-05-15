@@ -8,5 +8,6 @@ public class Hearth : PowerUp
     {
         base.Pickup();
         playerObj.AddHealth(value);
+        Destroyer();
     }
 }

@@ -9,6 +9,7 @@ public class Strenght : PowerUp
     {
         base.Pickup();
         StartCoroutine(AddStrenght());
+        Destroyer();
     }
 
     IEnumerator AddStrenght()
