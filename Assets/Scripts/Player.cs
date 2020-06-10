@@ -16,6 +16,8 @@ public class Player : Character
 
     public int trapDamage = 10;
 
+    bool isFallen = false;
+
     public void AddHealth(int health)
     {
         if (currentHealth < maxHealth) currentHealth += health;
@@ -81,13 +83,28 @@ public class Player : Character
     protected override void Die()
     {
         base.Die();
+        animator.SetBool("isDead", true);
+        transform.Translate(0, 0.22f, 0);
         currentHealth = maxHealth;
-        Invoke("Respawn", 0.5f);
+        //Invoke("Respawn", 3.0f);
+        if (isFallen)
+        {
+            Respawn(0.5f);
+            isFallen = false;
+            Debug.Log("FallRespawn");
+        }
+        else
+        {
+            Respawn(3.0f);
+            Debug.Log("NormalRespawn");
+        }
+        this.enabled = false;
     }
 
-    protected override void Respawn()
+    protected override void Respawn(float time)
     {
-        base.Respawn();
+        //animator.SetTrigger("isDying");
+        base.Respawn(time);
         healthBar.SetHealth(maxHealth);
     }
 
@@ -109,13 +126,14 @@ public class Player : Character
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Collision");
         if (collision.CompareTag("Respawn"))
         {
             Debug.Log("Player fell");
+            isFallen = true;
             Die();
         }
-
-        if (collision.CompareTag("Trap"))
+        else if (collision.CompareTag("Trap"))
         {
             Debug.Log("Player hit Spikes");
             TakeDamage(trapDamage);

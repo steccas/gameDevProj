@@ -74,8 +74,9 @@ public class Character : MonoBehaviour
         Debug.Log("dead");
     }
 
-    protected virtual void Respawn() {
-        transform.position = respawnPoint;
+    protected virtual void Respawn(float time) {
+        Invoke("Respawn", time);
+        //transform.position = respawnPoint;
     }
 
     protected void Respawn(Vector3 respVector)
@@ -89,5 +90,12 @@ public class Character : MonoBehaviour
             return;
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
+
+    private void Respawn() 
+    { 
+        transform.position = respawnPoint;
+        animator.SetBool("isDead", false);
+        this.enabled = true;
     }
 }
