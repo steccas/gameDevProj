@@ -14,6 +14,8 @@ public class Player : Character
     bool isBlocking = false;
     public HealthBar healthBar;
 
+    public int trapDamage = 10;
+
     public void AddHealth(int health)
     {
         if (currentHealth < maxHealth) currentHealth += health;
@@ -111,6 +113,12 @@ public class Player : Character
         {
             Debug.Log("Player fell");
             Die();
+        }
+
+        if (collision.CompareTag("Trap"))
+        {
+            Debug.Log("Player hit Spikes");
+            TakeDamage(trapDamage);
         }
     }
 }
