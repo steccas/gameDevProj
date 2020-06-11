@@ -27,6 +27,9 @@ public class Character : MonoBehaviour
         audioManager = AudioManager.GetInstance();
         currentHealth = maxHealth;
         respawnPoint = transform.position;
+
+        this.enabled = false;
+        this.enabled = true;
     }
 
     protected void Attack()

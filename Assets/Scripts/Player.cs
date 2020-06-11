@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : Character
 {
@@ -17,6 +18,7 @@ public class Player : Character
     public int trapDamage = 10;
 
     bool isFallen = false;
+    bool canTakeDamage = true;
 
     public void AddHealth(int health)
     {
@@ -40,7 +42,7 @@ public class Player : Character
         //if (Mathf.Abs(horizontalMove) == 0f) audioManager.Play("WalkGrass");
         //else if (Mathf.Abs(horizontalMove) == 0f) audioManager.Stop("WalkGrass");
 
-        if (Input.GetButton("Jump"))
+        if (Input.GetButtonDown("Jump"))
         {
             jump = true;
             animator.SetBool("isJumping", true);
@@ -83,9 +85,10 @@ public class Player : Character
     protected override void Die()
     {
         base.Die();
+        canTakeDamage = false;
         animator.SetBool("isDead", true);
-        transform.Translate(0, 0.22f, 0);
-        currentHealth = maxHealth;
+        transform.Translate(0, -1f, 0);
+        //currentHealth = maxHealth;
         //Invoke("Respawn", 3.0f);
         if (isFallen)
         {
@@ -105,23 +108,32 @@ public class Player : Character
     {
         //animator.SetTrigger("isDying");
         base.Respawn(time);
-        healthBar.SetHealth(maxHealth);
+        Invoke("Reset", time-0.2f);
+        //healthBar.SetHealth(maxHealth);
     }
 
     protected override void TakeDamage(int damage)
     {
-        if (isBlocking == false)
+        if (canTakeDamage)
         {
-            base.TakeDamage(damage);
-            SyncHealthBar();
-            audioManager.Play("Hit");
-        } 
-        if (isBlocking == true) { audioManager.Play("SaberBlk"); }
+            if (isBlocking == false)
+            {
+                base.TakeDamage(damage);
+                SyncHealthBar();
+                audioManager.Play("Hit");
+            }
+            else if (isBlocking == true) { audioManager.Play("SaberBlk"); }
+        }  
     }
 
     private void SyncHealthBar()
     {
         healthBar.SetHealth(currentHealth);
+    }
+
+    private void Reset()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-	[SerializeField] private float m_JumpForce = 200f;                          // Amount of force added when the player jumps.
+	[SerializeField] private float m_JumpForce = 800f;                          // Amount of force added when the player jumps.
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
 	[SerializeField] private bool m_AirControl = true;                         // Whether or not a player can steer while jumping;
@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
 	private Rigidbody2D m_Rigidbody2D;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
+	private bool doubleJump = false;
 
 	[Header("Events")]
 	[Space]
@@ -132,13 +133,17 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		// If the player should jump...
-		if (m_Grounded && jump)
+		if ((doubleJump || m_Grounded) && jump)
 		{
 			// Add a vertical force to the player.
+			Debug.Log("Jump");
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 			audioManager.Stop("Landing");
 			audioManager.Play("Jump");
+			if (doubleJump) doubleJump = false;
+			else if (!doubleJump) doubleJump = true;
+			Debug.Log(doubleJump);
 			//audioManager.Stop("WalkGrass");
 		}
 
