@@ -80,6 +80,7 @@ public class Player : Character
     {
         animator.SetBool("isJumping", false);
         audioManager.Play("Landing");
+        controller.CreateDust();
     }
 
     protected override void Die()
