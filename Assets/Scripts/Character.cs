@@ -22,7 +22,7 @@ public class Character : MonoBehaviour
     protected AudioManager audioManager;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         audioManager = AudioManager.GetInstance();
         currentHealth = maxHealth;

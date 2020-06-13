@@ -20,6 +20,9 @@ public class Player : Character
     bool isFallen = false;
     bool canTakeDamage = true;
 
+    public GameObject intro;
+    public GameObject ending;
+
     public void AddHealth(int health)
     {
         if (currentHealth < maxHealth) currentHealth += health;
@@ -30,6 +33,20 @@ public class Player : Character
     public void AddDamage(int dm)
     {
         damage += dm;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        StartCoroutine(StartUp());
+    }
+
+    private IEnumerator StartUp()
+    {
+        this.enabled = false;
+        yield return new WaitForSeconds(15.0f);
+        intro.SetActive(false);
+        this.enabled = true;
     }
 
     // Update is called once per frame
