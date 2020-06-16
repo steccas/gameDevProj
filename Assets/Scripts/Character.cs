@@ -28,8 +28,8 @@ public class Character : MonoBehaviour
         currentHealth = maxHealth;
         respawnPoint = transform.position;
 
-        this.enabled = false;
-        this.enabled = true;
+        /*this.enabled = false;
+        this.enabled = true;*/
     }
 
     protected void Attack()

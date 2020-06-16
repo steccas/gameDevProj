@@ -7,10 +7,11 @@ public class Player : Character
 {
     public PlayerController controller;
 
-    public float runspeed = 40f;
+    public float runspeed = 35f;
 
     float horizontalMove = 0f;
     bool jump = false;
+    bool isLanded = true;
 
     bool isBlocking = false;
     public HealthBar healthBar;
@@ -20,8 +21,11 @@ public class Player : Character
     bool isFallen = false;
     bool canTakeDamage = true;
 
+    bool inCutscene = false;
+
     public GameObject intro;
     public GameObject ending;
+    public Princess princess;
 
     public void AddHealth(int health)
     {
@@ -43,47 +47,74 @@ public class Player : Character
 
     private IEnumerator StartUp()
     {
+        inCutscene = true;
+        //horizontalMove = 0f;
         this.enabled = false;
-        yield return new WaitForSeconds(15.0f);
+        controller.enabled = false;
+        intro.SetActive(true);
+        yield return new WaitForSeconds(1.0f);
         intro.SetActive(false);
+        controller.enabled = true;
         this.enabled = true;
+        inCutscene = false;
+    }
+
+    private IEnumerator Ending()
+    {
+        ending.SetActive(true);
+        princess.Hug();
+        yield return new WaitForSeconds(1.0f);
+        inCutscene = true;
+        ending.SetActive(false);
+        animator.SetFloat("Speed", 1);
+        princess.Move();
+        horizontalMove = 17f;
+        yield return new WaitForSeconds(16.0f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
     // Update is called once per frame
     void Update()
     {
-        horizontalMove = Input.GetAxisRaw("Horizontal") * runspeed;
-
-        animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
-
-        //if (Mathf.Abs(horizontalMove) == 0f) audioManager.Play("WalkGrass");
-        //else if (Mathf.Abs(horizontalMove) == 0f) audioManager.Stop("WalkGrass");
-
-        if (Input.GetButtonDown("Jump"))
+        if (inCutscene == false) 
         {
-            jump = true;
-            animator.SetBool("isJumping", true);
-        }
+            if (!isBlocking)
+            {
+                horizontalMove = Input.GetAxisRaw("Horizontal") * runspeed;
 
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Attack();
-        }
+                animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
-        if (Input.GetButtonDown("Fire2"))
-        {
-            animator.SetTrigger("isBlocking");
-            audioManager.Play("SaberRise");
-        }
+                if (Input.GetButtonDown("Jump"))
+                {
+                    jump = true;
+                    isLanded = false;
+                    animator.SetBool("isJumping", true);
+                }
 
-        if (Input.GetButton("Fire2"))
-        {
-            isBlocking = true;
-        }
-        if (Input.GetButtonUp("Fire2"))
-        {
-            isBlocking = false;
-            animator.SetTrigger("stopBlocking");
+                if (Input.GetButtonDown("Fire1"))
+                {
+                    Attack();
+                }
+            }
+            
+            if (horizontalMove == 0f && isLanded)
+            {
+                if (Input.GetButtonDown("Fire2"))
+                {
+                    animator.SetTrigger("isBlocking");
+                    audioManager.Play("SaberRise");
+                }
+
+                if (Input.GetButton("Fire2"))
+                {
+                    isBlocking = true;
+                }
+                if (Input.GetButtonUp("Fire2"))
+                {
+                    isBlocking = false;
+                    animator.SetTrigger("stopBlocking");
+                }
+            }
         }
     }
 
@@ -95,7 +126,9 @@ public class Player : Character
 
     public void OnLanding()
     {
+        Debug.Log("Land");
         animator.SetBool("isJumping", false);
+        isLanded = true;
         audioManager.Play("Landing");
         controller.CreateDust();
     }
@@ -167,6 +200,10 @@ public class Player : Character
         {
             Debug.Log("Player hit Spikes");
             TakeDamage(trapDamage);
+        }
+        else if (collision.CompareTag("Finish"))
+        {
+            StartCoroutine(Ending());
         }
     }
 }

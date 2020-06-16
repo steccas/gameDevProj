@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
+	public Animator animator;
 	public ParticleSystem Dust;
 	[SerializeField] private float m_JumpForce = 2000f;                          // Amount of force added when the player jumps.
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
@@ -45,7 +46,8 @@ public class PlayerController : MonoBehaviour
 		if (OnCrouchEvent == null)
 			OnCrouchEvent = new BoolEvent();
 
-		audioManager = AudioManager.GetInstance();
+		if (AudioManager.GetInstance() != null) audioManager = AudioManager.GetInstance();
+		else audioManager = null;
 	}
 
 	private void FixedUpdate()
