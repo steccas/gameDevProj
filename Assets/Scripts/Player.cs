@@ -52,7 +52,7 @@ public class Player : Character
         this.enabled = false;
         controller.enabled = false;
         intro.SetActive(true);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(14.0f);
         intro.SetActive(false);
         controller.enabled = true;
         this.enabled = true;
@@ -63,14 +63,15 @@ public class Player : Character
     {
         ending.SetActive(true);
         princess.Hug();
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(12.5f);
         inCutscene = true;
         ending.SetActive(false);
         animator.SetFloat("Speed", 1);
         princess.Move();
         horizontalMove = 17f;
-        yield return new WaitForSeconds(16.0f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        yield return new WaitForSeconds(12.0f);
+        audioManager.Stop("WalkGrass");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     // Update is called once per frame
@@ -135,6 +136,8 @@ public class Player : Character
 
     protected override void Die()
     {
+        inCutscene = true;
+        horizontalMove = 0f;
         base.Die();
         canTakeDamage = false;
         animator.SetBool("isDead", true);
@@ -204,6 +207,8 @@ public class Player : Character
         else if (collision.CompareTag("Finish"))
         {
             StartCoroutine(Ending());
+            audioManager.FadeOut("Gameplay");
+            audioManager.FadeIn("Ending");
         }
     }
 }

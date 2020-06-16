@@ -17,7 +17,7 @@ public class Princess : MonoBehaviour
 
     void Start()
     {
-        speed = 300f;
+        speed = 250f;
         m_Rigidbody2D = GetComponent<Rigidbody2D>();
         this.enabled = false;
         this.enabled = true;

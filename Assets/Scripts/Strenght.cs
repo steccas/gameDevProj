@@ -9,6 +9,7 @@ public class Strenght : PowerUp
     protected override void Pickup()
     {
         base.Pickup();
+        audioManager.Play("PowerUp");
         StartCoroutine(AddStrenght());
         Destroyer();
     }

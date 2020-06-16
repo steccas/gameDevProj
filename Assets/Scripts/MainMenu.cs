@@ -4,27 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class MainMenu : MonoBehaviour
+public class MainMenu : Menu
 {
-    public Slider loadingBar;
     public void PlayGame()
     {
-        StartCoroutine(LoadGame());
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
-
-    private IEnumerator LoadGame()
-    {
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
-        
-        while (!operation.isDone)
-        {
-            loadingBar.value = operation.progress;
-            yield return null;
-        }
+        StartCoroutine(Load(operation));
+        audioManager.Stop("MainTheme");
+        audioManager.Play("Gameplay");
     }
 }

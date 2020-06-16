@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.MemoryProfiler;
+//using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class PowerUp : MonoBehaviour
@@ -8,7 +8,14 @@ public class PowerUp : MonoBehaviour
     protected Collider2D playerC;
     protected Player playerObj;
 
+    protected AudioManager audioManager;
+
     public int value;
+
+    private void Start()
+    {
+        audioManager = AudioManager.GetInstance();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

@@ -7,6 +7,7 @@ public class Hearth : PowerUp
     protected override void Pickup()
     {
         base.Pickup();
+        audioManager.Play("HealthPickup");
         playerObj.AddHealth(value);
         Destroyer();
     }

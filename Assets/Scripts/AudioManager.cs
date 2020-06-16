@@ -1,5 +1,7 @@
 using UnityEngine.Audio;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -71,6 +73,54 @@ public class AudioManager : MonoBehaviour
 		if (s == null) return;
 
 		s.source.Stop();
+	}
+
+	public void FadeOut(string audio)
+    {
+		Audio s = AudioFind(audio);
+		if (s == null) return;
+		AudioSource source = s.source;
+		StartCoroutine(FadeOut(source, 1.5f));
+	}
+
+	public void FadeIn(string audio)
+	{
+		Audio s = AudioFind(audio);
+		if (s == null) return;
+		AudioSource source = s.source;
+		StartCoroutine(FadeIn(source, 1.5f));
+	}
+
+	private static IEnumerator FadeOut(AudioSource audioSource, float FadeTime)
+	{
+		float startVolume = audioSource.volume;
+
+		while (audioSource.volume > 0)
+		{
+			audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
+
+			yield return null;
+		}
+
+		audioSource.Stop();
+		audioSource.volume = startVolume;
+	}
+
+	private static IEnumerator FadeIn(AudioSource audioSource, float FadeTime)
+	{
+		float startVolume = 0.2f;
+
+		audioSource.volume = 0;
+		audioSource.Play();
+
+		while (audioSource.volume < 1.0f)
+		{
+			audioSource.volume += startVolume * Time.deltaTime / FadeTime;
+
+			yield return null;
+		}
+
+		audioSource.volume = 1f;
 	}
 
 	private Audio AudioFind(string audio)
