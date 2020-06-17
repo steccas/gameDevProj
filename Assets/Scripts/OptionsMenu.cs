@@ -9,7 +9,10 @@ public class OptionsMenu : MonoBehaviour
 
     private void Start()
     {
-       
+        LoadPref("MasterVolume");
+        LoadPref("MusicVolume");
+        LoadPref("SFXMasterVolume");
+        LoadPref("Fullscreen");
     }
 
     public void SetMaster(float volume)
@@ -47,5 +50,21 @@ public class OptionsMenu : MonoBehaviour
     {
         PlayerPrefs.SetFloat(key, value);
         PlayerPrefs.Save();
+    }
+
+    void LoadPref(string key)
+    {
+        if (PlayerPrefs.HasKey(key) && key == "Fullscreen")
+        {
+            int value = PlayerPrefs.GetInt(key);
+            if (value == 0) Screen.fullScreen = false;
+            else Screen.fullScreen = true;
+            return;
+        }
+        else if (PlayerPrefs.HasKey(key)) 
+        {
+            float value = PlayerPrefs.GetFloat(key);
+            SetVolume(key, value);
+        }
     }
 }

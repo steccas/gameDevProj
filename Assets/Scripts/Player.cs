@@ -206,9 +206,12 @@ public class Player : Character
         }
         else if (collision.CompareTag("Finish"))
         {
-            StartCoroutine(Ending());
-            audioManager.FadeOut("Gameplay");
-            audioManager.FadeIn("Ending");
+            if (!inCutscene)
+            {
+                StartCoroutine(Ending());
+                audioManager.FadeOut("Gameplay");
+                audioManager.FadeIn("Ending");
+            }
         }
     }
 }
