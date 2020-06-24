@@ -6,6 +6,12 @@ using UnityEngine.UI;
 
 public class MainMenu : Menu
 {
+    public OptionsMenu optionsMenu;
+    protected override void Start()
+    {
+        base.Start();
+        optionsMenu.Awake();
+    }
     public void PlayGame()
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);

@@ -9,7 +9,7 @@ public class Menu : MonoBehaviour
 
     protected AudioManager audioManager;
 
-    private void Start()
+    protected virtual void Start()
     {
         audioManager = AudioManager.GetInstance();
     }

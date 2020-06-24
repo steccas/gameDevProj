@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class OptionsMenu : MonoBehaviour
 {
     public AudioMixer audioMixer;
+    public Slider masterSlider;
+    public Slider musicSlider;
+    public Slider masterSFXSlider;
+    public Toggle fsToggle;
 
-    private void Start()
+    public void Awake()
     {
         LoadPref("MasterVolume");
         LoadPref("MusicVolume");
@@ -57,14 +62,34 @@ public class OptionsMenu : MonoBehaviour
         if (PlayerPrefs.HasKey(key) && key == "Fullscreen")
         {
             int value = PlayerPrefs.GetInt(key);
-            if (value == 0) Screen.fullScreen = false;
-            else Screen.fullScreen = true;
+            if (value == 0) 
+            { 
+                Screen.fullScreen = false;
+                fsToggle.SetIsOnWithoutNotify(false);
+            }
+            else
+            {
+                Screen.fullScreen = true;
+                fsToggle.SetIsOnWithoutNotify(true);
+            }
             return;
         }
         else if (PlayerPrefs.HasKey(key)) 
         {
             float value = PlayerPrefs.GetFloat(key);
             SetVolume(key, value);
+            switch (key)
+            {
+                case "MasterVolume":
+                    masterSlider.SetValueWithoutNotify(value);
+                    break;
+                case "MusicVolume":
+                    musicSlider.SetValueWithoutNotify(value);
+                    break;
+                case "SFXMasterVolume":
+                    masterSFXSlider.SetValueWithoutNotify(value);
+                    break;
+            }  
         }
     }
 }
