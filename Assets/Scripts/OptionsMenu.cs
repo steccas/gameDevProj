@@ -11,6 +11,9 @@ public class OptionsMenu : MonoBehaviour
     public Slider musicSlider;
     public Slider masterSFXSlider;
     public Toggle fsToggle;
+    public Dropdown resDropdown;
+
+    Resolution[] resolutions;
 
     public void Awake()
     {
@@ -18,6 +21,20 @@ public class OptionsMenu : MonoBehaviour
         LoadPref("MusicVolume");
         LoadPref("SFXMasterVolume");
         LoadPref("Fullscreen");
+    }
+
+    private void Start()
+    {
+        resolutions = Screen.resolutions;
+        resDropdown.ClearOptions();
+        List<string> resOptions = new List<string>();
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + "x" + resolutions[i].height;
+            resOptions.Add(option);
+        }
+
+        resDropdown.AddOptions(resOptions);
     }
 
     public void SetMaster(float volume)
