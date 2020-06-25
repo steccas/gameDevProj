@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -25,16 +26,36 @@ public class OptionsMenu : MonoBehaviour
 
     private void Start()
     {
-        resolutions = Screen.resolutions;
+        resolutions = Screen.resolutions.Select(resolution => new Resolution { width = resolution.width, height = resolution.height }).Distinct().ToArray();
         resDropdown.ClearOptions();
         List<string> resOptions = new List<string>();
+
+        int cResI = 0;
+
         for (int i = 0; i < resolutions.Length; i++)
         {
             string option = resolutions[i].width + "x" + resolutions[i].height;
             resOptions.Add(option);
+
+            Debug.Log(Screen.width);
+            Debug.Log(Screen.height);
+
+            if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
+            {
+                cResI = i;
+                Debug.Log("CurrentResFound");
+            }
         }
 
         resDropdown.AddOptions(resOptions);
+        resDropdown.value = cResI;
+        resDropdown.RefreshShownValue();
+    }
+
+    public void SetResolution(int resIndex) 
+    {
+        Resolution resolution = resolutions[resIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
     public void SetMaster(float volume)
