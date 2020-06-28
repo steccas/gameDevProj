@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,10 +15,15 @@ public class OptionsMenu : MonoBehaviour
     public Toggle fsToggle;
     public Dropdown resDropdown;
 
+    private PrefStorage<int> storageInt;
+    private PrefStorage<float> storageFloat;
+
     Resolution[] resolutions;
 
     public void Awake()
     {
+        storageInt = gameObject.AddComponent<PrefStorage<int>>();
+        storageFloat = gameObject.AddComponent<PrefStorage<float>>();
         LoadPref("MasterVolume");
         LoadPref("MusicVolume");
         LoadPref("SFXMasterVolume");
@@ -61,19 +67,20 @@ public class OptionsMenu : MonoBehaviour
     public void SetMaster(float volume)
     {
         SetVolume("MasterVolume", volume);
-        SetPref("MasterVolume", volume);
+        //SetPref("MasterVolume", volume);
+        storageFloat.SetPref("MasterVolume", volume);
     }
 
     public void SetMusic(float volume)
     {
         SetVolume("MusicVolume", volume);
-        SetPref("MusicVolume", volume);
+        storageFloat.SetPref("MusicVolume", volume);
     }
 
     public void SetSFX(float volume)
     {
         SetVolume("SFXMasterVolume", volume);
-        SetPref("SFXMasterVolume", volume);
+        storageFloat.SetPref("SFXMasterVolume", volume);
     }
     private void SetVolume(string value, float volume)
     {
@@ -86,8 +93,9 @@ public class OptionsMenu : MonoBehaviour
         if (isFullScreen) pref = 1;
         else pref = 0;
         Screen.fullScreen = isFullScreen;
-        PlayerPrefs.SetInt("Fullscreen", pref);
-        PlayerPrefs.Save();
+        storageInt.SetPref("Fullscreen", pref);
+        /*PlayerPrefs.SetInt("Fullscreen", pref);
+        PlayerPrefs.Save();*/
     }
     void SetPref(string key, float value)
     {
